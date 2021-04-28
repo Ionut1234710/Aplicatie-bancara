@@ -1,6 +1,8 @@
 package files;
 
 import classes.*;
+import exceptions.InvalidInitializationException;
+import exceptions.validations.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,7 +12,7 @@ import java.util.List;
 
 public class Reader {
 
-    public String path = System.getProperty("user.dir") + "\\src\\files\\resources\\readers";
+    public static String path = System.getProperty("user.dir") + "\\src\\files\\resources\\readers";
 
     private static Reader instance = null;
 
@@ -24,11 +26,14 @@ public class Reader {
         return instance;
     }
 
-    public Bank bankReader(){
+    public Bank bankReader() throws Exception{
         try{
+            Timestamp.timestamp("Reader,bankReader");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "\\Bank.csv"));
             Bank bank = new Bank();
+            BankValidation validateBank = new BankValidation();
             bank.setBankName(bufferedReader.readLine());
+            validateBank.bankValidation(bank);
             bufferedReader.close();
             return bank;
         } catch (IOException e){
@@ -37,11 +42,13 @@ public class Reader {
         }
     }
 
-    public List<Account> accountReader(){
+    public List<Account> accountReader() throws Exception{
         try{
+            Timestamp.timestamp("Reader,accountReader");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "\\Accounts.csv"));
             String linie="";
             List<Account> accountList = new ArrayList<>();
+            AccountValidation validateAccount = new AccountValidation();
             while((linie = bufferedReader.readLine()) != null){
                 String[] tokens = linie.split(",");
                 Account account = new Account();
@@ -49,6 +56,7 @@ public class Reader {
                 account.setBic(tokens[1]);
                 account.setBalance(Double.parseDouble(tokens[2]));
                 account.setCurrency(tokens[3]);
+                validateAccount.accountValidation(account);
                 accountList.add(account);
             }
             bufferedReader.close();
@@ -59,11 +67,13 @@ public class Reader {
         }
     }
 
-    public List<Customer> customersReader(){
+    public List<Customer> customersReader() throws Exception{
         try{
+            Timestamp.timestamp("Reader,customersReader");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "\\Customers.csv"));
             String linie="";
             List<Customer> customerList = new ArrayList<>();
+            CustomerValidation validateCustomer = new CustomerValidation();
             while((linie = bufferedReader.readLine()) != null){
                 String[] tokens = linie.split(",");
                 Customer customer = new Customer();
@@ -72,6 +82,7 @@ public class Reader {
                 customer.setCnp(tokens[2]);
                 customer.setAddress(tokens[3] + ", " + tokens[4]);
                 customer.setEmail(tokens[5]);
+                validateCustomer.customerValidation(customer);
                 customerList.add(customer);
             }
             bufferedReader.close();
@@ -82,11 +93,13 @@ public class Reader {
         }
     }
 
-    public List<Card> cardsReader(){
+    public List<Card> cardsReader() throws Exception{
         try{
+            Timestamp.timestamp("Reader,cardsReader");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "\\Cards.csv"));
             String linie="";
             List<Card> cardList = new ArrayList<>();
+            CardValidation validateCard = new CardValidation();
             while((linie = bufferedReader.readLine()) != null){
                 String[] tokens = linie.split("[,/]+");
                 Card card = new Card();
@@ -95,6 +108,7 @@ public class Reader {
                 card.setExpirationYear(tokens[2]);
                 card.setCustomerName(tokens[3]);
                 card.setPin(tokens[4]);
+                validateCard.cardValidation(card);
                 cardList.add(card);
             }
             bufferedReader.close();
@@ -105,16 +119,19 @@ public class Reader {
         }
     }
 
-    public Contact contactReader(){
+    public Contact contactReader() throws Exception{
         try{
+            Timestamp.timestamp("Reader,contactReader");
             BufferedReader bufferedReader = new BufferedReader(new FileReader(path + "\\Contact.csv"));
             String linie="";
             Contact contact = new Contact();
+            ContactValidation validateContact = new ContactValidation();
             while((linie = bufferedReader.readLine()) != null ){
                 String[] tokens = linie.split(",");
                 contact.setPhone_number(tokens[0]);
                 contact.setMail_address(tokens[1]);
                 contact.setFacebook_address(tokens[2]);
+                validateContact.contactValidation(contact);
             }
             bufferedReader.close();
             return contact;

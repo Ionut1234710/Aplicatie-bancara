@@ -23,6 +23,7 @@ public class Writer {
 
     public static void writerBank(Bank bank){
         try{
+            Timestamp.timestamp("Writer,writerBank");
             FileWriter fileWriter = new FileWriter(path + "\\Bank.csv");
             fileWriter.append(bank.getBankName());
             fileWriter.append("\n");
@@ -34,6 +35,7 @@ public class Writer {
 
     public static void writerAccount(List<Account> accountList){
         try{
+            Timestamp.timestamp("Writer,writerAccount");
             FileWriter fileWriter = new FileWriter(path + "\\Accounts.csv");
             for(int i=0; i<accountList.size(); i++){
                 fileWriter.append(accountList.get(i).getIban() + ", ");
@@ -49,6 +51,7 @@ public class Writer {
 
     public static void writerCard(List<Card> cardList){
         try{
+            Timestamp.timestamp("Writer,writerCard");
             FileWriter fileWriter = new FileWriter(path + "\\Cards.csv");
             for(int i=0; i<cardList.size(); i++){
                 fileWriter.append(cardList.get(i).getCardNumber() + ", ");
@@ -64,6 +67,7 @@ public class Writer {
 
     public static void writerContact(Contact contact){
         try{
+            Timestamp.timestamp("Writer,writerContact");
             FileWriter fileWriter = new FileWriter(path + "\\Contact.csv");
             fileWriter.append(contact.getPhone_number() + ", ");
             fileWriter.append(contact.getMail_address() + ", ");
@@ -76,6 +80,7 @@ public class Writer {
 
     public static void writerCustomer(List<Customer> customerList){
         try{
+            Timestamp.timestamp("Writer,writerCustomer");
             FileWriter fileWriter = new FileWriter(path + "\\Customers.csv");
             for(int i=0; i<customerList.size(); i++){
                 fileWriter.append(customerList.get(i).getLast_name() + ", ");

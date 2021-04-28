@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws InsufficientFundsException, InvalidInitializationException {
+    public static void main(String[] args) throws Exception {
 
         //Contact
         Contact contact = new Contact("2108","infoBCR@gmail.com","Banca Comerciala Romana");
@@ -111,18 +111,18 @@ public class Main {
         BankValidation validateBank = new BankValidation();
         validateBank.bankValidation(bank);
 
-//        System.out.println(bank.toString());
+        //System.out.println(bank.toString());
 //        Writer.getInstance().writerBank(bank);
 //        Writer.getInstance().writerAccount(accountList);
 //        Writer.getInstance().writerCard(cardList1);
 //        Writer.getInstance().writerContact(contact);
 //        Writer.getInstance().writerCustomer(customerList);
 
-        //System.out.println(Reader.getInstance().contactReader().toString());
-        //System.out.println(Reader.getInstance().cardsReader().toString());
-        //System.out.println(Reader.getInstance().customersReader().toString());
-        //System.out.println(Reader.getInstance().accountReader().toString());
-        //System.out.println(Reader.getInstance().bankReader());
+//        System.out.println(Reader.getInstance().contactReader().toString());
+//        System.out.println(Reader.getInstance().cardsReader().toString());
+//        System.out.println(Reader.getInstance().customersReader().toString());
+//        System.out.println(Reader.getInstance().accountReader().toString());
+//        System.out.println(Reader.getInstance().bankReader());
 //        for(int i=0; i<Reader.getInstance().customersReader().size(); i++)
 //            System.out.println(Reader.getInstance().customersReader().get(i).toString());
 
