@@ -1,15 +1,11 @@
 package database;
 
 import classes.Contact;
-import classes.Transaction;
 import exceptions.validations.ContactValidation;
-import exceptions.validations.TransactionValidation;
 import files.Timestamp;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ContactService {

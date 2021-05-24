@@ -1,15 +1,11 @@
 package database;
 
-import classes.Card;
 import classes.Customer;
-import exceptions.validations.CardValidation;
 import exceptions.validations.CustomerValidation;
 import files.Timestamp;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CustomerService {

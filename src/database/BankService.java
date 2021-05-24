@@ -1,7 +1,5 @@
 package database;
 
-import classes.Contact;
-import exceptions.validations.ContactValidation;
 import files.Timestamp;
 
 import java.sql.*;
