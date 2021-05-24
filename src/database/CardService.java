@@ -1,5 +1,6 @@
-package classes;
+package database;
 
+import classes.Card;
 import exceptions.validations.CardValidation;
 import files.Timestamp;
 
@@ -7,52 +8,41 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static classes.CardCrud.createCard;
-import static classes.CardCrud.updateCard;
+public class CardService {
 
-public class CardCrud {
+    private static CardService instance = null;
 
-    private static CardCrud instance = null;
-
-    public static CardCrud getInstance(){
+    public static CardService getInstance(){
         if (instance == null)
-            instance = new CardCrud();
+            instance = new CardService();
         return instance;
     }
 
     private static Connection getConnection() {
         try {
-            Timestamp.timestamp("CardCrud,getConnection");
+            Timestamp.timestamp("CardService,getConnection");
             return DriverManager.getConnection("jdbc:mysql://localhost:3306/jdbc", "root", "<hm51f/nLwao");
         } catch (SQLException e) {
             throw new RuntimeException("Nu s-a putut realiza conectarea la baza de date.");
-//            e.printStackTrace();
-//            return null;
         }
     }
 
     public static void createCard(Card card) throws Exception{
         try (Connection connection = getConnection()) {
-            Timestamp.timestamp("CardCrud,createCard");
+            Timestamp.timestamp("CardService,createCard");
 
             CardValidation validateCard = new CardValidation();
 
             validateCard.cardValidation(card);
 
-            Statement statement = connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into card(card_number,expiration_month,expiration_year," +
+                    "customer_name,pin) values(?,?,?,?,?)");
 
-            ResultSet resultSet = statement.executeQuery("select count(1) as NumberOfRows from card");
-
-            resultSet.next();
-
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into card values(?,?,?,?,?,?)");
-
-            preparedStatement.setInt(1, resultSet.getInt("NumberOfRows")+1);
-            preparedStatement.setString(2, card.getCardNumber());
-            preparedStatement.setString(3, card.getExpirationMonth());
-            preparedStatement.setString(4, card.getExpirationYear());
-            preparedStatement.setString(5, card.getCustomerName());
-            preparedStatement.setString(6, card.getPin());
+            preparedStatement.setString(1, card.getCardNumber());
+            preparedStatement.setString(2, card.getExpirationMonth());
+            preparedStatement.setString(3, card.getExpirationYear());
+            preparedStatement.setString(4, card.getCustomerName());
+            preparedStatement.setString(5, card.getPin());
 
             preparedStatement.executeUpdate();
             System.out.println("Cardul " + card.getCardNumber() + " a fost introdus in baza de date cu succes.");
@@ -65,7 +55,7 @@ public class CardCrud {
 
     public List<Card> readCard() throws Exception{
         try (Connection connection = getConnection()){
-            Timestamp.timestamp("CardCrud,readCard");
+            Timestamp.timestamp("CardService,readCard");
 
             Statement statement = connection.createStatement();
 
@@ -96,27 +86,45 @@ public class CardCrud {
         }
     }
 
-    public static void updateCard(Card card) throws Exception{
+    public static void updateCard(Card card, int id_card) throws Exception{
         try (Connection connection = getConnection()){
-            Timestamp.timestamp("CardCrud,updateCard");
+            Timestamp.timestamp("CardService,updateCard");
 
             CardValidation validateCard = new CardValidation();
 
             validateCard.cardValidation(card);
 
             PreparedStatement preparedStatement = connection.prepareStatement("update card set card_number=?,expiration_month=?," +
-                    "expiration_year=?,customer_name=?,pin=? where card_number like ?");
+                    "expiration_year=?,customer_name=?,pin=? where idcard=?");
 
-            preparedStatement.setString(2,card.getCardNumber());
-            preparedStatement.setString(3,card.getExpirationMonth());
-            preparedStatement.setString(4,card.getExpirationYear());
-            preparedStatement.setString(5,card.getCustomerName());
-            preparedStatement.setString(6,card.getPin());
+            preparedStatement.setString(1,card.getCardNumber());
+            preparedStatement.setString(2,card.getExpirationMonth());
+            preparedStatement.setString(3,card.getExpirationYear());
+            preparedStatement.setString(4,card.getCustomerName());
+            preparedStatement.setString(5,card.getPin());
+            preparedStatement.setInt(6,id_card);
 
             preparedStatement.executeUpdate();
-            System.out.println("Cardul " + card.getCardNumber() + " a fost modificat cu succes.");
+            System.out.println("Cardul cu id-ul " + id_card + " a fost modificat cu succes.");
         } catch (SQLException e){
-            throw new RuntimeException("Eroare la modificarea cardului " + card.getCardNumber());
+            throw new RuntimeException("Eroare la modificarea cardului cu id-ul " + id_card);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteCard(int id_card){
+        try(Connection connection = getConnection()){
+            Timestamp.timestamp("CardService,deleteCard");
+
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from card where idcard=?");
+
+            preparedStatement.setInt(1,id_card);
+
+            preparedStatement.executeUpdate();
+            System.out.println("Stergerea cardului cu id-ul " + id_card + " a avut succes.");
+        } catch (SQLException e){
+            throw new RuntimeException("Eroare la stergerea cardului cu id-ul " + id_card);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -124,13 +132,10 @@ public class CardCrud {
 
 }
 
-class Test{
-    public static void main(String[] args) throws Exception {
 
-//        System.out.println(CardCrud.getInstance().readCard().size());
-//        Card card = new Card("5555367890987654","12","30","Popescu Mircea","4555");
-//        updateCard(card);
-//        for(int i=0; i<CardCrud.getInstance().readCard().size(); i++)
-//            System.out.println(CardCrud.getInstance().readCard().get(i).toString());
-    }
-}
+//class Test{
+//    public static void main(String[] args) throws Exception {
+//        Card card = new Card("1111111111111111","09","22","Lunganu Catalin","1122");
+//        CardService.createCard(card);
+//    }
+//}
