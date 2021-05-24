@@ -1,5 +1,6 @@
 package classes;
 
+import exceptions.validations.CardValidation;
 import operations.Service;
 
 public class Card implements Service {
@@ -20,7 +21,7 @@ public class Card implements Service {
         this.pin="";
     }
 
-    public Card(String cardNumber, String expirationMonth, String expirationYear, String customerName, String pin) {
+    public Card(String cardNumber, String expirationMonth, String expirationYear, String customerName, String pin){
         this.id = genID();
         this.cardNumber = cardNumber;
         this.expirationMonth = expirationMonth;

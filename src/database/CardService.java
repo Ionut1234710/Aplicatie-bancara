@@ -5,8 +5,8 @@ import exceptions.validations.CardValidation;
 import files.Timestamp;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CardService {
 
@@ -27,7 +27,7 @@ public class CardService {
         }
     }
 
-    public static void createCard(Card card) throws Exception{
+    public static void createCard(Card card, int account_id_fk2) throws Exception{
         try (Connection connection = getConnection()) {
             Timestamp.timestamp("CardService,createCard");
 
@@ -36,13 +36,14 @@ public class CardService {
             validateCard.cardValidation(card);
 
             PreparedStatement preparedStatement = connection.prepareStatement("insert into card(card_number,expiration_month,expiration_year," +
-                    "customer_name,pin) values(?,?,?,?,?)");
+                    "customer_name,pin,account_id2) values(?,?,?,?,?,?)");
 
             preparedStatement.setString(1, card.getCardNumber());
             preparedStatement.setString(2, card.getExpirationMonth());
             preparedStatement.setString(3, card.getExpirationYear());
             preparedStatement.setString(4, card.getCustomerName());
             preparedStatement.setString(5, card.getPin());
+            preparedStatement.setInt(6,account_id_fk2);
 
             preparedStatement.executeUpdate();
             System.out.println("Cardul " + card.getCardNumber() + " a fost introdus in baza de date cu succes.");
@@ -53,7 +54,7 @@ public class CardService {
         }
     }
 
-    public List<Card> readCard() throws Exception{
+    public Map<Card, Integer> readCard() throws Exception{
         try (Connection connection = getConnection()){
             Timestamp.timestamp("CardService,readCard");
 
@@ -61,7 +62,7 @@ public class CardService {
 
             ResultSet resultSet = statement.executeQuery("select * from card");
 
-            List<Card> cardList = new ArrayList<>();
+            Map<Card, Integer> cardIntegerMap = new HashMap<Card, Integer>();
 
             CardValidation validateCard = new CardValidation();
 
@@ -74,10 +75,10 @@ public class CardService {
                 card.setCustomerName(resultSet.getString(5));
                 card.setPin(resultSet.getString(6));
                 validateCard.cardValidation(card);
-                cardList.add(card);
+                cardIntegerMap.put(card,resultSet.getInt(7));
             }
 
-            return cardList;
+            return cardIntegerMap;
         } catch (SQLException e){
             throw new RuntimeException("Eroarea la citirea cardurilor din baza de date.");
         } catch (Exception e){
@@ -86,7 +87,7 @@ public class CardService {
         }
     }
 
-    public static void updateCard(Card card, int id_card) throws Exception{
+    public static void updateCard(Card card, int id_card, int account_id_fk2) throws Exception{
         try (Connection connection = getConnection()){
             Timestamp.timestamp("CardService,updateCard");
 
@@ -95,14 +96,15 @@ public class CardService {
             validateCard.cardValidation(card);
 
             PreparedStatement preparedStatement = connection.prepareStatement("update card set card_number=?,expiration_month=?," +
-                    "expiration_year=?,customer_name=?,pin=? where idcard=?");
+                    "expiration_year=?,customer_name=?,pin=?,account_id2=? where idcard=?");
 
             preparedStatement.setString(1,card.getCardNumber());
             preparedStatement.setString(2,card.getExpirationMonth());
             preparedStatement.setString(3,card.getExpirationYear());
             preparedStatement.setString(4,card.getCustomerName());
             preparedStatement.setString(5,card.getPin());
-            preparedStatement.setInt(6,id_card);
+            preparedStatement.setInt(6,account_id_fk2);
+            preparedStatement.setInt(7,id_card);
 
             preparedStatement.executeUpdate();
             System.out.println("Cardul cu id-ul " + id_card + " a fost modificat cu succes.");
@@ -135,7 +137,13 @@ public class CardService {
 
 //class Test{
 //    public static void main(String[] args) throws Exception {
-//        Card card = new Card("1111111111111111","09","22","Lunganu Catalin","1122");
-//        CardService.createCard(card);
+//        Card card = new Card("2938474738811100","01","21","Popescu Ion","1555");
+//        CardService.updateCard(card,2,2);
+//        CardService.createCard(card,1);
+//        CardService.deleteCard(1);
+//        for(Map.Entry entry : CardService.getInstance().readCard().entrySet())
+//        {
+//            System.out.println(entry.getKey() + "account_id_fk: " + entry.getValue());
+//        }
 //    }
 //}
