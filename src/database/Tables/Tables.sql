@@ -1,3 +1,33 @@
+CREATE TABLE `jdbc`.`bank` (
+  `idbank` INT NOT NULL,
+  `bank_name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idbank`));
+
+
+CREATE TABLE `jdbc`.`contact` (
+  `phone_number` VARCHAR(45) NOT NULL,
+  `mail_address` VARCHAR(45) NOT NULL,
+  `facebook_address` VARCHAR(45) NOT NULL,
+  `bank_id` INT NOT NULL,
+  PRIMARY KEY (`phone_number`),
+  INDEX `bank_id` (`bank_id` ASC) VISIBLE,
+  CONSTRAINT `bank_id_fk`
+    FOREIGN KEY (`bank_id`)
+    REFERENCES `jdbc`.`bank` (`idbank`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+
+
+CREATE TABLE `jdbc`.`account` (
+  `idaccount` INT NOT NULL,
+  `iban` VARCHAR(45) NOT NULL,
+  `bic` VARCHAR(45) NOT NULL,
+  `balance` DOUBLE NOT NULL,
+  `currency` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idaccount_ex`),
+  UNIQUE INDEX `iban_UNIQUE` (`ibanex` ASC) VISIBLE);
+
+
 CREATE TABLE `jdbc`.`transaction` (
   `idtransaction` INT NOT NULL AUTO_INCREMENT,
   `currency` VARCHAR(45) NOT NULL,
@@ -33,20 +63,6 @@ CREATE TABLE `jdbc`.`card` (
     ON UPDATE CASCADE);
 
 
-CREATE TABLE `jdbc`.`contact` (
-  `phone_number` VARCHAR(45) NOT NULL,
-  `mail_address` VARCHAR(45) NOT NULL,
-  `facebook_address` VARCHAR(45) NOT NULL,
-  `bank_id` INT NOT NULL,
-  PRIMARY KEY (`phone_number`),
-  INDEX `bank_id` (`bank_id` ASC) VISIBLE,
-  CONSTRAINT `bank_id_fk`
-    FOREIGN KEY (`bank_id`)
-    REFERENCES `jdbc`.`bank` (`idbank`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
-
-
 CREATE TABLE `jdbc`.`customer` (
   `idcustomer` INT NOT NULL AUTO_INCREMENT,
   `first_name` VARCHAR(45) NOT NULL,
@@ -63,13 +79,3 @@ CREATE TABLE `jdbc`.`customer` (
     REFERENCES `jdbc`.`account` (`idaccount`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
-
-
-CREATE TABLE `jdbc`.`account` (
-  `idaccount` INT NOT NULL,
-  `iban` VARCHAR(45) NOT NULL,
-  `bic` VARCHAR(45) NOT NULL,
-  `balance` DOUBLE NOT NULL,
-  `currency` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idaccount_ex`),
-  UNIQUE INDEX `iban_UNIQUE` (`ibanex` ASC) VISIBLE);
